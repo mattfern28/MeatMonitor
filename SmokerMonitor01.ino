@@ -92,6 +92,7 @@ void handleTouch(TouchEvent ev) {
         mode = MODE_COOLING;
         coolingReset();
         coolStartMs = millis();
+        readyToEat = false; minutesToEat = NAN;
         Serial.println(">> COOLING - place MEAT in front of the IR sensor");
       }
       break;
@@ -129,7 +130,10 @@ void runAlgorithms(float dtMin) {
     float tSec = (millis() - coolStartMs) / 1000.0;
     minutesToEat = coolingUpdate(tSec, surfaceC, ambientC);
     bool nowReady = !isnan(surfaceC) && surfaceC <= T_EAT_C;
-    if (nowReady && !readyToEat) Serial.println(">> READY TO FEAST)");
+    if (nowReady && !readyToEat) {
+      displayWake();
+      Serial.println(">> READY TO FEAST");
+    }
     readyToEat = nowReady;
   }
 }
